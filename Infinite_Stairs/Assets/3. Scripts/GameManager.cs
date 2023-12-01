@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     int score, selectedIndex;
     public bool gaugeStart = false, vibrationOn = true, isGamePaused = false;
-    float gaugeRedcutionRate = 0.0025f;
+    float gaugeRedcutionRate = 0.0005f;
     public bool[] IsChangeDir = new bool[20];
 
     Vector3 beforePos,
@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
 
         StairsInit();
         GaugeReduce();
-        StartCoroutine("CheckGauge");
+        StartCoroutine(CheckGauge());
 
         UI[0].SetActive(dslManager.IsRetry());
         UI[1].SetActive(!dslManager.IsRetry());
@@ -143,13 +143,13 @@ public class GameManager : MonoBehaviour
         if (gaugeStart)
         {
             // 점수가 높을수록 게이지 감소율 증가
-            if (score > 30) gaugeRedcutionRate = 0.0033f;
-            if (score > 70) gaugeRedcutionRate = 0.0037f;
-            if (score > 100) gaugeRedcutionRate = 0.0043f;
-            if (score > 170) gaugeRedcutionRate = 0.005f;
-            if (score > 250) gaugeRedcutionRate = 0.005f;
-            if (score > 400) gaugeRedcutionRate = 0.0065f;
-            if (score > 600) gaugeRedcutionRate = 0.0075f;
+            if (score > 30)  gaugeRedcutionRate = 0.0010f;
+            if (score > 70)  gaugeRedcutionRate = 0.0015f;
+            if (score > 100) gaugeRedcutionRate = 0.002f;
+            if (score > 170) gaugeRedcutionRate = 0.0025f;
+            if (score > 250) gaugeRedcutionRate = 0.003f;
+            if (score > 400) gaugeRedcutionRate = 0.0035f;
+            if (score > 600) gaugeRedcutionRate = 0.004f;
             gauge.fillAmount -= gaugeRedcutionRate;
         }
         Invoke("GaugeReduce", 0.01f);
@@ -181,7 +181,7 @@ public class GameManager : MonoBehaviour
         if (vibrationOn) Vibration();
         dslManager.SaveMoney(player.money);
 
-        CancelInvoke();  // 게이지바 정지
+        CancelInvoke();
         Invoke("DisableUI", 1.5f);
     }
 
