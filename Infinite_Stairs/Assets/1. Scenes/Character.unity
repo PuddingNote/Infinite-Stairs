@@ -1588,14 +1588,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
-  characterNames:
-  - "\uD68C\uC0AC\uC6D0"
-  - "\uB798\uD37C"
-  - "\uBE44\uC11C"
   dslManager: {fileID: 234500792}
   selectBtn: {fileID: 57398308}
   purchaseBtn: {fileID: 2087752326}
-  sound: {fileID: 0}
   characterImage: {fileID: 187447627}
   characterName: {fileID: 453515601}
   price: {fileID: 2082863363}

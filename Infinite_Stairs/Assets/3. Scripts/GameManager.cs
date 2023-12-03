@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public ObjectManager objectManager;
     public DSLManager dslManager;
     public DontDestory dontDestory;
+    public GameObject gameOverUI;
+
     public GameObject[] players, stairs, UI;
     public GameObject pauseBtn, backGround;
 
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
 
         UI[0].SetActive(dslManager.IsRetry());
         UI[1].SetActive(!dslManager.IsRetry());
+        gameOverUI.SetActive(false);
     }
 
     // 처음에 계단 생성
@@ -70,7 +73,10 @@ public class GameManager : MonoBehaviour
             if (i != 0)
             {
                 // 랜덤 확률에 따른 코인 오브젝트 활성화
-                if (Random.Range(1, 9) < 3) objectManager.MakeObj("coin", i);
+                if (Random.Range(1, 9) < 3)
+                {
+                    objectManager.MakeObj("coin", i);
+                }
                 if (Random.Range(1, 9) < 3 && i < 19)
                 {
                     if (state == State.leftDir) state = State.rightDir;
@@ -86,6 +92,7 @@ public class GameManager : MonoBehaviour
     {
         IsChangeDir[num + 1 == 20 ? 0 : num + 1] = false;
         beforePos = stairs[num == 0 ? 19 : num - 1].transform.position;
+
         switch (state)
         {
             case State.leftDir:
@@ -118,7 +125,7 @@ public class GameManager : MonoBehaviour
             else stairs[i].transform.position += rightDir;
         }
 
-        // 계단을 일정 높이 이하로 이동
+        // 계단이 일정 높이 이하면 이동
         for (int i = 0; i < 20; i++)
         {
             if (stairs[i].transform.position.y < -5) SpawnStair(i);
@@ -134,7 +141,10 @@ public class GameManager : MonoBehaviour
         // 점수 업데이트 및 게이지 증가
         scoreText.text = (++score).ToString();
         gauge.fillAmount += 0.7f;
-        backGround.transform.position += backGround.transform.position.y < -14f ? new Vector3(0, 4.7f, 0) : new Vector3(0, -0.05f, 0);
+
+        // 배경화면 무한 스크롤링
+        backGround.transform.position += backGround.transform.position.y < -14f ?
+            new Vector3(0, 4.7f, 0) : new Vector3(0, -0.05f, 0);
     }
 
     // Gauge (게이지바)
@@ -168,6 +178,8 @@ public class GameManager : MonoBehaviour
     // 게임 오버
     void GameOver()
     {
+        gameOverUI.SetActive(true);
+
         // Animation
         anim[0].SetBool("GameOver", true);
         player.anim.SetBool("Die", true);
@@ -196,7 +208,7 @@ public class GameManager : MonoBehaviour
         if (score == dslManager.GetBestScore() && score != 0) UI[2].SetActive(true);
     }
 
-    // 버튼 눌렀을때
+    // 아래버튼
     public void BtnDown(GameObject btn)
     {
         btn.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
@@ -204,7 +216,7 @@ public class GameManager : MonoBehaviour
         else if (btn.name == "ChangeDirBtn") player.Climb(true);
     }
 
-    // 버튼 뗐을때
+    // 위버튼
     public void BtnUp(GameObject btn)
     {
         btn.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -226,6 +238,9 @@ public class GameManager : MonoBehaviour
     {
         selectedIndex = dslManager.GetSelectedCharIndex();
         player = players[selectedIndex].GetComponent<Player>();
+        sound[3] = player.sound[0];
+        sound[4] = player.sound[1];
+        sound[5] = player.sound[2];
     }
 
     // 기본 설정 버튼

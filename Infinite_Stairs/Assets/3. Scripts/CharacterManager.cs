@@ -26,12 +26,18 @@ public class CharacterManager : MonoBehaviour
     {
         if (dir == "Right") 
         {
-             if (++index == dslManager.characterSprite.Length-1) index = 0; 
+            if (++index == dslManager.characterSprite.Length - 1)
+            {
+                index = 0;
+            }
         }
 
         if (dir == "Left") 
-        { 
-             if (--index == -1) index = dslManager.characterSprite.Length - 2; 
+        {
+            if (--index == -1)
+            {
+                index = dslManager.characterSprite.Length - 2;
+            }
         }
 
         // 인덱스의 문자 정보 변경

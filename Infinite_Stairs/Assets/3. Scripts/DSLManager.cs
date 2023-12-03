@@ -72,10 +72,10 @@ public class DSLManager : MonoBehaviour
             characters.Add(new Character("Rapper", "래퍼", 500, false, false));
             characters.Add(new Character("Secretary", "비서", 500, false, false));
 
-            rankings.Add(new Ranking(0, 7));
-            rankings.Add(new Ranking(0, 7));
-            rankings.Add(new Ranking(0, 7));
-            rankings.Add(new Ranking(0, 7));
+            rankings.Add(new Ranking(0, 3));
+            rankings.Add(new Ranking(0, 3));
+            rankings.Add(new Ranking(0, 3));
+            rankings.Add(new Ranking(0, 3));
 
             informs.Add(new Inform(0, true, true, true, false));
 
@@ -90,47 +90,33 @@ public class DSLManager : MonoBehaviour
         gameManager.SettingOnOff("BgmBtn");
         gameManager.SettingOnOff("SoundBtn");
         gameManager.SettingOnOff("VibrateBtn");
+
+        print(Application.persistentDataPath);  // Json 파일 경로
     }
 
     // Data Save & Load (데이터 저장 및 로드)
     // 데이터 저장
     public void DataSave() 
-    {   // 리스트들을 암호화하고 지정경로에 Json으로 변환하여 저장
+    {   // 지정경로에 Json으로 저장
         string jdata_0 = JsonConvert.SerializeObject(characters);
         string jdata_1 = JsonConvert.SerializeObject(rankings);
-        string jdata_2 = JsonConvert.SerializeObject(informs);
-       
-        byte[] bytes_0 = System.Text.Encoding.UTF8.GetBytes(jdata_0);
-        byte[] bytes_1 = System.Text.Encoding.UTF8.GetBytes(jdata_1);
-        byte[] bytes_2 = System.Text.Encoding.UTF8.GetBytes(jdata_2);
+        string jdata_2 = JsonConvert.SerializeObject(informs);    
 
-        string format_0 = System.Convert.ToBase64String(bytes_0);
-        string format_1 = System.Convert.ToBase64String(bytes_1);
-        string format_2 = System.Convert.ToBase64String(bytes_2);       
-
-        File.WriteAllText(Application.persistentDataPath + "/Characters.json", format_0);
-        File.WriteAllText(Application.persistentDataPath + "/Rankings.json", format_1);
-        File.WriteAllText(Application.persistentDataPath + "/Informs.json", format_2);
+        File.WriteAllText(Application.persistentDataPath + "/Characters.json", jdata_0);
+        File.WriteAllText(Application.persistentDataPath + "/Rankings.json", jdata_1);
+        File.WriteAllText(Application.persistentDataPath + "/Informs.json", jdata_2);
     }
 
     // 데이터 로드
     public void DataLoad()
-    {   // 지정경로에 암호화된 Json파일을 복호화하고 변환 후 로드
+    {   // 지정경로의 Json파일을 로드
         string jdata_0 = File.ReadAllText(Application.persistentDataPath + "/Characters.json");
         string jdata_1 = File.ReadAllText(Application.persistentDataPath + "/Rankings.json");
         string jdata_2 = File.ReadAllText(Application.persistentDataPath + "/Informs.json");
-      
-        byte[] bytes_0 = System.Convert.FromBase64String(jdata_0);
-        byte[] bytes_1 = System.Convert.FromBase64String(jdata_1);
-        byte[] bytes_2 = System.Convert.FromBase64String(jdata_2);
 
-        string reformat_0 = System.Text.Encoding.UTF8.GetString(bytes_0);
-        string reformat_1 = System.Text.Encoding.UTF8.GetString(bytes_1);
-        string reformat_2 = System.Text.Encoding.UTF8.GetString(bytes_2);
-        
-        characters = JsonConvert.DeserializeObject<List<Character>>(reformat_0);
-        rankings = JsonConvert.DeserializeObject<List<Ranking>>(reformat_1);
-        informs = JsonConvert.DeserializeObject<List<Inform>>(reformat_2);
+        characters = JsonConvert.DeserializeObject<List<Character>>(jdata_0);
+        rankings = JsonConvert.DeserializeObject<List<Ranking>>(jdata_1);
+        informs = JsonConvert.DeserializeObject<List<Inform>>(jdata_2);
     }
 
     // Select Character (캐릭터 선택)
@@ -151,7 +137,9 @@ public class DSLManager : MonoBehaviour
     {
         DataLoad();
         for (int i = 0; i < characters.Count; i++)
+        {
             if (characters[i].selected) return i;
+        }
         return 0;
     }
 
@@ -247,8 +235,9 @@ public class DSLManager : MonoBehaviour
         int charIndex = GetSelectedCharIndex();
         rankings[3].characterIndex = charIndex;
 
-        // 점수를 기준으로 내림차순 정렬
-        rankings.Sort(delegate (Ranking a, Ranking b) { return b.score.CompareTo(a.score); });
+        // 점수를 기준으로 내림차순 정렬 (람다식 사용)
+        // a와 b의 score를 비교해서 내림차순 정렬
+        rankings.Sort((a, b) => b.score.CompareTo(a.score)); 
 
         DataSave();
         DataLoad();

@@ -10,7 +10,6 @@ public class ObjectManager : MonoBehaviour
     GameObject[] coin;
     GameObject[] targetPool;
 
-    // 오브젝트 풀링
     void Awake()
     {
         coin = new GameObject[20];
@@ -21,11 +20,11 @@ public class ObjectManager : MonoBehaviour
     {
         for(int i = 0; i < coin.Length; i++)
         {
-            coin[i] = Instantiate(coinPrefab, gameManager.stairs[i].transform); // 계단 오브젝트의 자식으로 설정
+            // 코인 프리펩을 불러와 계단 오브젝트의 자식으로 설정
+            coin[i] = Instantiate(coinPrefab, gameManager.stairs[i].transform); 
             coin[i].transform.position += new Vector3(0, 0.6f, 0);
             coin[i].SetActive(false);
         }
-       
     }
 
     public void MakeObj(string type, int index)
